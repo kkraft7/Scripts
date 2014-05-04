@@ -1,0 +1,19 @@
+#
+# This bug occurred when the "TD" directory was missing from one file set and
+# the "OD" directory was missing from another. The first file set was correctly
+# skipped, but the second file set was processed despite the missing file
+# (the contents of "OR" were copied to "TD").
+#
+# This bug was fixed by changing $var = "" to undef($var), which caused the
+# "if undef()" test guarding the main loop to work correctly.
+
+OR	c:
+TR	c:
+
+OD	kkraft
+TD	fred
+FN	*
+
+OD	kkraft/Addr
+TD	temp/3633.tmp
+FN	*

@@ -1,0 +1,25 @@
+
+name=A
+name=B;parent=A
+name=C;parent=A
+name=D;parent=A
+name=E;parent=B
+name=F;parent=B
+name=G;parent=C
+name=H;parent=F
+name=I;parent=G
+name=J;parent=I
+name=K;parent=I
+
+# Tree structure defined by this file:
+#
+#                    A
+#                 /  |  \
+#               B    C    D
+#             /  \   |
+#            E    F  G
+#                 |  |
+#                 H  I
+#                   / \
+#                  J   K
+

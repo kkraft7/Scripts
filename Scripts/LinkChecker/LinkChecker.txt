@@ -1,0 +1,50 @@
+
+LinkChecker
+===========
+
+How often have you come across a broken link on a web page?
+We're looking to eliminate this problem with the creation
+of the LinkChecker.
+
+Given a starting URL, the program will download the HTML page,
+scan it for links, and then download the link targets.
+Information about working and broken links for the starting page
+will be presented to the user.
+
+The process of checking links is, of course, complicated by the fact
+that connections can be flaky. You'll want to be on the lookout for
+typos and HTTP error codes and to have a maximum download timeout of
+approximately 10 seconds per link. A properly working link will allow
+you to fully read the data, without throwing errors, within the time
+limit.
+
+Since there could be dozens of links on a page, we'll want to download
+them in parallel. Because it's considered bad form to monopolize
+concurrent connections on web servers, we'll have a parameterized cap
+on the number of threads that can be downloading simultaneously
+(default to 5). While a command-line program is a great starting point,
+you'll probably want a GUI to increase usability. As your downloads
+succeed or fail, you'll want to update the UI in real time with the
+status of the links. Dropping links into working and broken lists would
+be sufficient. Alternatively, you could track links in a table. We'll
+also want an indication of progress. We'll get that through a pie chart,
+segmented by the number of links on the original page. This will update
+live, colorizing a slice when a download completes. You could also have
+it reflect status: starting with a white pie, as a thread begins to
+download, a slice is colored yellow; on completion, the slice turns
+green or red for working or broken, respectively.
+
+This specification is intentionally short on details, leaving you
+tremendous flexibility in implementation. Java provides a number of
+technologies suited to the task, so consider this an opportunity to
+explore and have fun.
+
+Also, you don't need to be constrained to the minimum requirements
+(a command-line program with a progress-indicating GUI). You have
+several pieces of information that could also be presented to the
+user (and analyzed), such as a link's content type, size in bytes,
+time to download, and status (malformed URL, downloading, timeout,
+success, etc.).
+
+Also, Java provides ways of rendering link targets, including HTML
+and images.
