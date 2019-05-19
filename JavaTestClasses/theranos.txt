@@ -1,0 +1,72 @@
+// write a function that, given two integers represented as singly linked lists (where each node is a digit, and the head is the most significant digit), it builds up, digit-by-digit, the integer sum represented by a third linked list.
+
+// public class Node {
+//       int Value;
+//       Node next;
+//
+//        public Node(int value) {
+//            Value = value;
+//        }
+//   }
+// Ex: Given inputs:
+//  [3]->[1]->[2], [1]->[4]->[5]
+// output would be:
+// [4]->[5]->[7]
+
+Node sumLinkedListContents(Node n1, Node n2) {
+    Node result;
+    Stack<Integer> s1 = new Stack<Integer>(), s2 = new Stack<Integer>(), s3 = new Stack<Integer>();
+    while ( n1.next != null ) {
+        s1.push(n1.value);
+        n1.next = n1.next.next;
+    }
+    while ( n2.next != null ) {
+        s2.push(n2.value);
+        n2.next = n2.next.next;
+    }
+    boolean remainder = false;
+    while ( ! s1.empty() && ! s2.empty() ) {
+        int sum = s1.pop() + s2.pop() + remainder ? 1 : 0;
+        if ( sum > 10 ) {
+            s3.push(sum - 10);
+            remainder = true;
+        }
+        else {
+            s3.push(sum)
+            remainder = false;
+        }
+        
+    }
+    if ( s1.empty() ) {
+       while ( ! s2.empty() ) {
+          int sum = s2.pop() + remainder ? 1 : 0;
+          if ( sum > 10 ) {
+            s3.push(sum - 10);
+            remainder = true;
+        }
+        else {
+            s3.push(sum)
+            remainder = false;
+        }
+       }
+    }
+    if ( s2.empty() ) {
+       while ( ! s1.empty() ) {
+          int sum = s1.pop() + remainder ? 1 : 0;
+          if ( sum > 10 ) {
+            s3.push(sum - 10);
+            remainder = true;
+        }
+        else {
+            s3.push(sum)
+            remainder = false;
+        }
+       }
+    }
+    Node previous;
+    for ( Node ptr; ! s3.empty(); ptr = ptr.next ) {
+        ptr = new Node(s3.pop());
+        
+    }
+    return result;
+}

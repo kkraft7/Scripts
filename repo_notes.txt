@@ -1,4 +1,0 @@
-
-For the NCAA stuff the actual repo (where I do development and updates)
-is /home/Kevin/Scripts/NCAA. Any updates need to be copied from there
-to Scripts\NCAA for check-in.

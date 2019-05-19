@@ -1,0 +1,67 @@
+
+entrance_log.txt
+
+1234 >
+2123 >
+1234 <
+123 >
+2123 <
+123 <
+
+Rules:
+No people in the room at the end of the day
+Person can’t be in the room more than once at the same time
+Format of line (number space > or < strictly enforced on each line)
+
+Input: String[] of the lines of the file
+Output: true if file formatting and entries are valid, else false
+
+boolean validateEntranceLog(String[] inputLogData) {
+	int inRoom = 0;
+
+	HashMap<String, String> logData;
+	for ( String nextLine : inputLogData ) {
+		If ( nextLine == null ) {
+			return false;
+		}
+		String[] entry = nextLine.split();
+		if ( entry.length != 2 ) {
+			return false;
+		}
+		String key = entry[0].trim();
+		if ( ! Integer.isInteger(key) ) {
+			return false;
+		}
+		String value = entry[1].trim();
+		if ( ! ( value.equals(“>”) or value.equals(“<”) )) {
+			return false;
+		}
+		if ( ! logData.contains(key) ) {
+			logData.put(key, value);
+			If ( value.equals(“>”) ) {
+				inRoom++;
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			String state = logData.get(key);
+			if ( state.equals(“>”) ) {
+				if ( value.equals(“>”) ) {
+					return false;
+				}
+				inRoom--;
+			}
+			else {
+				if ( value.equals(“<”) ) {
+					return false;
+				}
+				inRoom++;
+				
+			}
+			logData.put(key, value);
+		}
+	}
+	return inRoom == 0;
+}

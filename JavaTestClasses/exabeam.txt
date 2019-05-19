@@ -1,0 +1,49 @@
+
+----------------------------------------
+CODING
+----------------------------------------
+ /**
+ * Implement the following interface.
+ */
+
+import java.math.Integer
+
+public interface DuplicateFinder {
+
+     /**
+      * Create a string of comma separated Integers (as strings)
+          *    which are found in both lists
+      *
+      * @param arr1 a large array of Integers
+      * @param arr2 a large array of Integers
+      * @return string containing comma separated Integers that appear
+      *         in both arrays
+      *
+      */
+     public String findDupes(Integer[] arr1, Integer[] arr2);
+
+ }
+ 
+ class DupFinder implements DuplicateFinder {
+  @override
+  public String findDupes(Integer[] arr1, Integer[] arr2) {
+    // String result = ""
+    if (arr1 == null || arr2 == null) {
+      return "";
+    }
+    List<String> result = new ArrayList();
+    List<Integer> arr1List = new ArrayList(arr1);
+    for (int i = 0; i < arr2.length; i++) {
+      if (arr1List.contains(arr2[i])) {
+        result.add(arr2[i]);
+      }
+    }
+    return result.join(",");	// What does join() do for empty list?
+  }
+ }
+ 
+ 
+ 12345
+ 34567
+ 
+ 3,4,5
