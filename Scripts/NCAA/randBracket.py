@@ -6,6 +6,7 @@
 
 from random import random
 import math, sys
+# Had to comment out my old scriptOptions package
 # import math, sys, scriptOptions
 
 # Use standard try/except with "debugLevel = int(sys.argv[1])"?

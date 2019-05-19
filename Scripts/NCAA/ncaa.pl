@@ -175,7 +175,7 @@ print("\nAVG. WIN SEED   AVG. SEED DIF\n");
 print(  "=============   =============\n");
 
 for ($i = 0; $i < scalar(@key1); $i++) {
-  printf("%-5s: %6.2f   %-5s: %6.2f\n",
+  printf("%s: %6.2f    %s: %6.2f\n",
     $key1[$i], $avg_seed_tot{$key1[$i]}, $key2[$i], $avg_seed_dif{$key2[$i]});
 }
 

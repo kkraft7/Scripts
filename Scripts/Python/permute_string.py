@@ -1,6 +1,7 @@
-#!c:/Python2.4.1/python.exe
+#!/usr/bin/python
+# c:/Python2.4.1/python.exe
 # 
-# reverse_string.pl: Reverse an input string
+# permute_string.pl: Print out all the permutations of an input string
 
 import sys
 
