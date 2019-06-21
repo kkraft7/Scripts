@@ -1,11 +1,12 @@
 
-To-DO:
+To-Do:
 
 * Remove Scripts/NCAA.old (after checking/comparing contents)?
-* Look into what to do about security alerts
+* Look into what to do about GitHub security alerts
 
 Notes:
 
+* To push changes do: 
 * Not sure why listApp and MPGCalculator are listed as "untracked"
   when they already map to git repos
 
