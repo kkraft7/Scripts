@@ -128,6 +128,50 @@ public class ProjectEuler extends ExerciseBaseClass {
     return factors;
   }
 
+  // These are other versions of the factoring algorithm.
+  // Note that this took more than 24 hours to factor 600851475143!
+  static Set<Long> slowFactorNumber(long number) {
+    Set<Long> factors = new HashSet<>();
+    for (long factorBy = 2; factorBy + 1 <= number/2; factorBy++) {
+      // Had to add this to make sure my code wasn't hanging!
+      if (factorBy % 10000000000L == 0) {
+        ExerciseBaseClass.debugLevel(2, getCurrentTimestamp() + ": Up to " + factorBy);
+      }
+      if (!factors.contains(factorBy) && number % factorBy == 0) {
+        Long newFactor = number/factorBy;
+        ExerciseBaseClass.debugLevel(2, "Adding factor " + factorBy);
+        factors.add(factorBy);
+        if (newFactor != 1L && newFactor != factorBy) {
+          ExerciseBaseClass.debugLevel(2, "Adding factor " + factorBy);
+          factors.add(newFactor);
+        }
+      }
+    }
+    return factors;
+  }
+
+  // Note that this fails with a StackOverflowError at about 15000 (at least on my 4 GB machine)
+  static void recursiveFactorNumber(long number, long factorBy, Set<Long> factors) {
+    if (!factors.contains(factorBy) && number % factorBy == 0) {
+      Long newFactor = number/factorBy;
+      ExerciseBaseClass.debugLevel(2, "Adding factor " + factorBy);
+      factors.add(factorBy);
+      if (newFactor != 1L && newFactor != factorBy) {
+        ExerciseBaseClass.debugLevel(2, "Adding factor " + factorBy);
+        factors.add(newFactor);
+      }
+    }
+    if (factorBy + 1 <= number/2) {
+      recursiveFactorNumber(number, factorBy + 1, factors);
+    }
+  }
+
+  static Set<Long> recursiveFactorNumber(long number) {
+    Set<Long> factors = new HashSet<>();
+    recursiveFactorNumber(number, 2, factors);
+    return factors;
+  }
+
   /*
    * 003. Largest prime factor
    *
@@ -150,14 +194,16 @@ public class ProjectEuler extends ExerciseBaseClass {
     return primeCache.contains(number);
   }
 
-  // Not sure if I can extend the sieve algorithm on demand to find larger primes.
-  // (make a note about this)
-  // If not then I'll just have to cache the largest amount possible (square root of MAX_LONG?)
-
-  // Will have to watch for overflow with this algorithm
-  // Add some more documentation of this algorithm
-  // Index at i represents 2i + 1 (we are skipping all even numbers)
-  // This fails with "OutOfMemoryError: Java heap space" for values much greater than Integer.MAX_VALUE/20.
+  /*
+   * Notes:
+   * o We are skipping all even numbers by having the index at i represent 2i + 1
+   * o For some reason I got overflows using int, so I changed it to long (and downcast to int)
+   * o This fails with "OutOfMemoryError: Java heap space" for values much greater than Integer.MAX_VALUE/20
+   *
+   * I originally assumed I could calculate the first N prime numbers and then extend the
+   * list as needed, but the algorithm depends on the list of non-primes that have been
+   * "crossed out", which can't be arbitrarily extended.
+   */
   static ArrayList<Integer> getPrimeNumbersUsingSieveOfEratosthenes(int number) {
     ArrayList<Boolean> isPrime = new ArrayList<>();
     int sieveLimit = number/2;
@@ -169,6 +215,7 @@ public class ProjectEuler extends ExerciseBaseClass {
     for (long i = 1; i < sieveLimit; i++) {
       if (isPrime.get((int)i)) {
         if (i*i < number) {
+          // Mark multiples of the current number (starting at the square) as non-prime
           for (long j = 2*i*(i + 1); j < sieveLimit; j += 2*i + 1) {
             isPrime.set((int)j, Boolean.FALSE);
           }
@@ -206,50 +253,6 @@ public class ProjectEuler extends ExerciseBaseClass {
       }
     }
     return primeList;
-  }
-
-  // Note that this took more than 24 hours to factor 600851475143!
-  static Set<Long> slowFactorNumber(long number) {
-    Set<Long> factors = new HashSet<>();
-    for (long factorBy = 2; factorBy + 1 <= number/2; factorBy++) {
-      // Had to add this to make sure my code wasn't hanging!
-      if (factorBy % 10000000000L == 0) {
-        ExerciseBaseClass.debugLevel(2, getCurrentTimestamp() + ": Up to " + factorBy);
-      }
-      if (!factors.contains(factorBy) && number % factorBy == 0) {
-        Long newFactor = number/factorBy;
-        ExerciseBaseClass.debugLevel(2, "Adding factor " + factorBy);
-        factors.add(factorBy);
-        if (newFactor != 1L && newFactor != factorBy) {
-          ExerciseBaseClass.debugLevel(2, "Adding factor " + factorBy);
-          factors.add(newFactor);
-        }
-      }
-    }
-    return factors;
-  }
-
-  // Note that this fails with a StackOverflowError for sufficiently large numbers!
-  // (should probably try and figure out what the approximate limit is)
-  static void recursiveFactorNumber(long number, long factorBy, Set<Long> factors) {
-    if (!factors.contains(factorBy) && number % factorBy == 0) {
-      Long newFactor = number/factorBy;
-      ExerciseBaseClass.debugLevel(2, "Adding factor " + factorBy);
-      factors.add(factorBy);
-      if (newFactor != 1L && newFactor != factorBy) {
-        ExerciseBaseClass.debugLevel(2, "Adding factor " + factorBy);
-        factors.add(newFactor);
-      }
-    }
-    if (factorBy + 1 <= number/2) {
-      recursiveFactorNumber(number, factorBy + 1, factors);
-    }
-  }
-
-  static Set<Long> recursiveFactorNumber(long number) {
-    Set<Long> factors = new HashSet<>();
-    recursiveFactorNumber(number, 2, factors);
-    return factors;
   }
 
   static final long PRIME_FACTOR_NUM = 600851475143L;
@@ -322,28 +325,9 @@ public class ProjectEuler extends ExerciseBaseClass {
    * would include the missing factors (9, 16, and 18).
    */
   public static int smallestEvenlyDivisibleMultipleOfOneThroughTwenty() {
-/*
-    // This version hangs...
-    // If I can't get it to work I should remove the EVEN_FACTORS_UP_TO_20 case from factorUtility()
-    int number = 427674624;
-    while (true) {
-      Set<Long> results = factorUtility(number, FactorMode.EVEN_FACTORS_UP_TO_20);
-      if (results.size() == 19) {
-        break;
-      }
-      number++;
-    }
-    return number;
-*/
-    // Check if other factor is even, if not multiply by 2?
-/*
-    int multiple = 1;
-    for (int i = 11; i <= 20; i++) {
-      multiple *= i;
-      ExerciseBaseClass.debugLevel(0, "Multiplied by " + i + " (current total = " + multiple + ")");
-    }
-    return multiple;
-*/
+    // I got the version below by multiplying primes below 20, using the "check" function
+    // (below) to see if any factors were missing, and then adjusting it to include the
+    // missing factors (by including another 2 and 3).
     // Is there any more systematic way to derive this value?
     return 2*2*3*3*4*5*7*11*13*17*19;
   }
@@ -682,14 +666,34 @@ public class ProjectEuler extends ExerciseBaseClass {
   }
 
   /*
+   * 12. Highly divisible triangular number
+   *
+   * The sequence of triangle numbers is generated by adding the natural numbers.
+   * So the 7th triangle number would be 1 + 2 + 3 + 4 + 5 + 6 + 7 = 28. The first ten terms would be:
+   * 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, ...
+   *
+   * Let us list the factors of the first seven triangle numbers:
+   *  1: 1
+   *  3: 1,3
+   *  6: 1,2,3,6
+   * 10: 1,2,5,10
+   * 15: 1,3,5,15
+   * 21: 1,3,7,21
+   * 28: 1,2,4,7,14,28
+   *
+   * We can see that 28 is the first triangle number to have over five divisors.
+   *
+   * What is the value of the first triangle number to have over five hundred divisors?
+   */
+
+  /*
    * TO DO:
-   * 1. Write a function for measuring performance
-   * 2. Figure out StackOverflow failure point for recursiveFactorNumber()
-   * 3. Refactor/rewrite largestProductOfFourAdjacentNumbers() (print out the source)?
-   * 4. Look over the official answers for the previous Euler problems, especially:
-   *    4. Numeric palindromes
-   *    5. Multiple of 1-20
-   *    9. Pythagorean triplet
+   * o Write a function for measuring performance
+   * o Refactor/rewrite largestProductOfFourAdjacentNumbers() (print out the source)?
+   * o Look over the official answers for the previous Euler problems, especially:
+   *   4. Numeric palindromes
+   *   5. Multiple of 1-20
+   *   9. Pythagorean triplet
    */
   public static void main(String[] args) {
     // See ProjectEulerTest for tests with assertions for correct answers
