@@ -1,0 +1,71 @@
+
+The LinkChecker program downloads the contents of a URL, crawls it looking
+for sub-URLs, downloads the sub-URLs, and displays the progress and results
+on a UI. This version is hard-coded to start at www.google.com.
+
+Here is a basic, class-by-class description of the program:
+
+LinkChecker.java
+----------------
+
+Sets up the UI, including a PieChart to track download progress. Calls a
+UrlFinder to parse the sub-URLs from the contents of the main URL. Loops
+over each sub-URL, creating a UrlReaderTask which attempts to download its
+contents.
+
+UrlReader.java
+--------------
+
+Takes a URL and a timeout, opens a connection to the URL, and returns the
+contents of the URL in String or List form.
+
+UrlFinder.java
+--------------
+
+Extends UrlReader. Downloads the contents of a given URL, parses it, and
+returns the list of Sub-URLs.
+
+UrlReaderTask.java
+------------------
+
+A Runnable task that extends UrlReader and returns the contents
+of a specified URL. It maintains a list of ReaderStatusListener.
+The method fireStatusEvent() calls statusChanged() for each listener,
+with a ReaderStatusEvent argument, to communicate the status of the
+download.
+
+PieChart.java
+-------------
+
+Presents a graphical representation of success, failure, and not-done
+status in a pie chart.
+
+Need to explain slop and (especially) increment.
+
+A few notes on the design:
+
+* I originally attempted to implement the download timeout using thread
+  interrupts, but I believe that standard I/O is blocking and interrupts
+  don't work. I looked into implementing the I/O with Channels, which I
+  believe are non-blocking, but it seemed a bit complicated for my
+  time-frame. For now I just check the timeout in the read loop inside
+  the downloader thread.
+
+* I originally implemented the thread limit and a barrier using a
+  static counter in the thread/runnable class. It seemed to work, but I
+  switched to using an ExecutorService for the thread limit and a
+  CountDownLatch for the barrier (to ensure that one group of
+  downloads would complete before the next).
+
+* I looked at combining the class for the initial URL reader and the
+  sub-URL threads, but ultimately they seemed different enough that I
+  factored out the common code into a super class (UrlReader.java).
+
+* For communication between the threads and the UI I implemented a custom
+  event listener.
+
+* I originally implemented the thread limit and a barrier using a
+  static counter in the thread/runnable class. It seemed to work, but I
+  switched to using an ExecutorService for the thread limit and a
+  CountDownLatch for the barrier (to ensure that one group of
+  downloads would complete before the next).

@@ -1,0 +1,14 @@
+This is some text for the Rentrack test. The idea is to count the
+number of times the work 'Rentrack' appears in a file. Here is the
+original problem description:
+
+Write a program that, given a file name, returns the number of times
+the work 'Rentrack' appears in the named file.
+
+Here is a line with the work Rentrack multiple times:
+
+Rentrack, Rentrack, fred, stuff, garbage, Rentrack, Hi!, Rentrack
+Start of line: Rentrack, Rentrack.
+
+And, in conclusion, Rentrack.
+

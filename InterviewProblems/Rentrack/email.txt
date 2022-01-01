@@ -1,0 +1,284 @@
+
+Hi,
+
+My apologies for the delay in responding. I have to say that I applied on a
+lark, as my wife and I have family in Portland but I am currently living in
+the San Francisco Bay Area.
+
+I was recently laid off, and view a move back to Portland as a last resort
+if I am unable to find work down here.
+
+However, that being said, it seemed a little lame to apply and then say
+"just kidding" when you came back with additional questions. Therefore I
+have attempted to answer your test problems below.
+
+Many thanks for responding to my initial inquiry.
+
+Best regards,
+
+Kevin Kraft
+
+-----Original Message-----
+From: ens@rentrak.com [mailto:ens@rentrak.com] 
+Sent: Tuesday, March 10, 2009 1:42 PM
+To: Kevin Kraft
+Subject: Challenging projects, brilliant coworkers, supportive management
+
+Thank you for your interest in Rentrak Corporation.  In order to make sure
+we are on the same page, we've developed a few toy problems we would like
+you to look at.  The goal on these isn't so much to see whether you get them
+right, as to see how you approach them.  Please don't spend too much time on
+these -- there's no time limit, but we'd hate to see you work on these
+instead of something more interesting.
+
+These toy problems are intended to be solved under the assumption that you
+are sitting at a bash prompt (or your development environment of choice)
+with access to your favorite programming languages and tools.
+
+You need not use the same tools/language to solve each problem.  The ideal
+solution will include working code, but a partially correct solution,
+pseudo-code, or an explanation of the approach you'd take would also work.
+
+Please respond in a single plain text email.
+
+Toy Problem 1  Counting
+
+Write a program that, given a filename, returns the number of times the word
+'Rentrak' appears in the named file.
+
+----------------------
+#!c:/Perl/bin/perl.exe
+#
+# rentrack1.pl: Toy Problem #1 from Rentrack.
+
+# Note case-sensitivity issues...
+
+my $filename = ( $ARGV[0] || 'rentrack1.txt' );
+my $pattern = 'Rentrack';
+my $count = 0;
+
+print "Opening file: $filename\n";
+open FILE, $filename;
+
+while ( <FILE> ) {
+    print if ( $debugLevel > 0 );
+    while ( $_ =~ /$pattern/gc ) { $count++; }
+}
+
+printf "The pattern %s appeared in the file %s %d times\n",
+    $pattern, $filename, $count;
+----------------------
+
+Toy Problem 2  Sorting
+
+Write a function to return a sorted copy of a list. The function's caller
+should be able to choose the comparison.  How would you test your sort
+function to convince yourself it works correctly?  Feel free to include more
+than one solution to this problem.
+
+----------------------
+/*
+** Toy Problem #2 from Rentrack:
+*/
+import java.util.*;
+
+public class rentrack2<T extends Comparable> {
+    Comparator<T> sortFunction;
+
+    public rentrack2(Comparator<T> sortFunction) {
+        setSortFunction(sortFunction);
+    }
+
+    public rentrack2() {
+        setSortFunction(
+            new Comparator<T>() {
+                public int compare(T c1, T c2) {
+                    return c1.compareTo(c2);
+                }
+            }
+        );
+    }
+
+    public Collection<T> sort(Collection<T> list) {
+        ArrayList<T> sortedList = new ArrayList<T>(list);
+        Collections.sort(sortedList, sortFunction);
+        return sortedList;
+    }
+
+    public void setSortFunction(Comparator<T> sortFunction) {
+        this.sortFunction = sortFunction;
+    }
+}
+
+----------------------
+#!c:/Perl/bin/perl.exe
+#
+# rentrack2.pl: Toy Problem #2 from Rentrack.
+
+sub defaultSortFunction($$) {
+    my ( $a, $b ) = @_;
+    return $a <=> $b;
+}
+
+my @list1 = ( 1, 5, 3, 8, 3, 6 );
+printf "Original list: %s\n", ( join ', ', @list1 );
+@list1 = sort defaultSortFunction @list1;
+printf "After sorting: %s\n", ( join ', ', @list1 );
+----------------------
+
+Toy Problem 3  Maintaining
+
+Explain, in English, what this code does and how you might use it:
+
+  function foo(pr, s, vect)
+  {
+      var len = vect.length;
+      if (len == 1) {
+          return pr(vect[0], s);
+      } else {
+          return foo(pr, pr(vect[0], s), vect.slice(1,len));
+      }
+  }
+
+----------------------
+My best guess is that pr() is some sort of binary operator (like, '+', for
+example) and foo() recursively applies the operator to every element in
+vect, with 's' as an initial condition. For example, if the operator is '+'
+then it just adds all of the operands plus s.
+
+I wrote a test version in Perl, created a dummy version of pr() that just
+prints out it's operands, and fed in the list ( a, b, c, d ).
+
+Here are the results:
+
+$ ./rentrack3.pl
+foo(): V0 = a, VECT = [ b, c, d ]
+pr( a, s )
+foo(): V0 = b, VECT = [ c, d ]
+pr( b, pr(a, s) )
+foo(): V0 = c, VECT = [ d ]
+pr( c, pr(b, pr(a, s)) )
+FINAL VALUE IS: pr(c, pr(b, pr(a, s)))
+
+Here is the script:
+
+#!c:/Perl/bin/perl.exe
+#
+# rentrack3.pl: Toy Problem #3 from Rentrack.
+
+sub pr($$) {
+    my ( $a, $s ) = @_;
+    print "pr( $a, $s )\n";
+    return "pr($a, $s)";
+}
+ 
+sub foo($$@) {
+
+    my ( $pr, $s, @vect ) = @_;
+    my $v0 = shift @vect;
+    printf "foo(): V0 = $v0, VECT = [ %s ]\n", join ', ', @vect;
+
+    if ( @vect == 1 ) {
+        return $pr->( $v0, $s );
+    }
+    else {
+        return foo( $pr, $pr->( $v0, $s ), @vect );
+    }
+}
+
+printf "FINAL VALUE IS: %s\n", foo( \&pr, 's', ( a, b, c, d ));
+----------------------
+
+How would you improve the code above? Feel free to improve it by rewriting
+it in a different language.
+
+----------------------
+Since I am not sure what it does, alas, I have little hope of improving it.
+----------------------
+
+Toy Problem 4  Algorithm
+
+Part 1 - Tell me what this code does, and its big-O performance
+
+----------------------
+This code returns the intersection of lists a and b.
+It's big-O performance is O(n^2)
+----------------------
+
+Part 2 - Re-write it yourself and tell me the big-O performance of your
+solution
+
+  def who_knows(a, b):
+     """ a and b are lists """
+     c = []
+     for i in a:
+         if is_mem(b, i):
+             c.append(i)
+     return uniqify(c)
+
+  def is_mem(a, elem):
+     for i in a:
+         if i == elem:
+             return True
+     return False
+
+  def uniqify(arr):
+     b = {}
+     for i in arr:
+         b[i] = 1
+     return b.keys()
+
+----------------------
+I believe this version is O(n):
+
+def intersect(a, b):
+   """ a and b are lists """
+   a.extend(b);
+   c = {}
+   d = []
+   for i in a:
+       if not c.has_key(i):
+           c[i] = 0
+       c[i] += 1
+       if c[i] == 2:
+           d.append(i)
+   return d
+----------------------
+
+Toy Problem 5 - Preferences
+* What is your favorite text editor?
+
+----------------------
+Probably vi. I liked TextPad when I was working with Windows.
+----------------------
+
+* What do you like least about your favorite programming language?
+
+----------------------
+My favorite programming language is Java. I guess the regular expression
+facilities are kind of crappy compared to Perl, because you have to
+instantiate a Pattern object.
+----------------------
+
+* What do you like least about your least favorite programming language?
+
+----------------------
+I'm not sure I have a least favorite programming language. I recall a
+certain amount of struggle with C++ (tracking down weird bugs that went away
+if I added a print statement), but I have always loved object orientation
+and C++ was my introduction to it.
+----------------------
+
+Also, if you would be so kind as to let me know where you learned of our
+open position, I would greatly appreciate it.
+
+----------------------
+I saw this position posted on Dice.
+----------------------
+
+Thanks again,
+
+Eric Stead
+HR Generalist
+Rentrak Corp.
+
